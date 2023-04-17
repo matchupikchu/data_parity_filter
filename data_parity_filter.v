@@ -61,11 +61,11 @@ begin
 
     if (axis_s_tvalid) begin
         
-        if (w_parity)
-            counter_even <= counter_even + 1;
-        else
+        if (w_parity) begin
             counter_odd <= counter_odd + 1;
-
+        end else begin
+            counter_even <= counter_even + 1;
+        end
     end
 
 
