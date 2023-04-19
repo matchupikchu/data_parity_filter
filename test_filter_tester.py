@@ -5,8 +5,6 @@ from cocotb.clock import Clock
 from test_filter_drivers import MasterDriver, SlaveDriver
 from test_filter_monitors import MasterMonitor, SlaveMonitor
 
-from numpy import sum
-
 
 class TbParityFilterTester(object):
     def __init__(self, dut):

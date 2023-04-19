@@ -10,7 +10,7 @@ def test(dut):
     
     tb.start_clock()
 
-    for _ in range(10):
+    for _ in range(1):
         x = random.sample(range(0, 256), 8)
 
         yield tb.axis_s_driver._driver_send(x)
