@@ -177,8 +177,25 @@ begin
         r_counter_control_transceiver <= r_counter_control_transceiver + 1;
     end
 
-    case(r_counter_control_transceiver)
+    if(r_counter_control_transceiver > 0) begin
+        if(r_even_flag[8-r_counter_control_transceiver]) begin
+            axis_m_tvalid_even <= 1;
+        end else begin 
+            axis_m_tvalid_even <= 0;
+        end
 
+        if(r_odd_flag[8-r_counter_control_transceiver]) begin
+            axis_m_tvalid_odd <= 1;
+        end else begin
+            axis_m_tvalid_odd <= 0;
+        end
+    end else begin
+        axis_m_tvalid_even <= 0;
+        axis_m_tvalid_odd <= 0;
+    end
+
+
+    case(r_counter_control_transceiver)
     8'd1    :   begin
                     axis_m_tdata_even <= r_even_bytes[63:56];
                     axis_m_tdata_odd  <= r_odd_bytes[63:56];
@@ -213,7 +230,6 @@ begin
                     r_counter_control_transceiver <= 0;
                     r_counter_control_receiver <= 0;
                 end
-
     endcase
 
 end
