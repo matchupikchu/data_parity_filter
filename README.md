@@ -36,4 +36,4 @@ The whole interface consists of such signals as:
   - Icarus Verilog 10.3 
 
 ## Example waveform
-![image](https://user-images.githubusercontent.com/56771910/232452856-bcdbb651-470a-4305-9f4f-897fa3d7fdc9.png)
+![image](https://user-images.githubusercontent.com/56771910/233341240-ec43584e-2d11-4929-8781-b03318bcb7a5.png)
