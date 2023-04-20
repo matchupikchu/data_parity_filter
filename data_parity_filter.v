@@ -63,7 +63,10 @@ reg [7:0] r_odd_flag;
 
 // Combinational logic
 assign w_parity = r_data[7] ^ r_data[6] ^ r_data[5] ^ r_data[4] ^ r_data[3] ^ r_data[2] ^ r_data[1] ^ r_data[0];
-assign axis_s_tready = (r_counter_control_receiver == 0) && (r_counter_control_transceiver == 0) ? 1'b1 : 1'b0;
+assign axis_s_tready = (r_counter_control_receiver == 0) &&
+                       (r_counter_control_transceiver == 0) &&
+                       (!(r_counter_control_transceiver == r_tlast_even)) && 
+                       (!(r_counter_control_transceiver == r_tlast_odd)) ? 1'b1 : 1'b0;
 
 // Procedural blocks, sequential logic
 
@@ -272,13 +275,13 @@ begin
     else if(r_odd_flag[7] == 1'b1)
         r_tlast_odd <= 1;
 
-    if (r_counter_control_transceiver == r_tlast_odd)
+    if ((r_counter_control_transceiver == r_tlast_odd) && (r_counter_control_receiver == 8))
         axis_m_tlast_odd <= 1;
     else 
         axis_m_tlast_odd <= 0;
 
 
-    if (r_counter_control_transceiver == r_tlast_even)
+    if ((r_counter_control_transceiver == r_tlast_even) && (r_counter_control_receiver == 8))
         axis_m_tlast_even <= 1;
     else 
         axis_m_tlast_even <= 0;

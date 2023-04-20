@@ -69,16 +69,6 @@ data_parity_filter dut(
 initial begin
     $dumpfile("data_parity_filter.vcd");
 	  $dumpvars;
-    //   $dumpvars(1, "data_parity_filter.vcd".m_even_bytes);
-    //   $dumpvars(1, m_odd_bytes);
-      
-    //   for(i = 0; i < 8; i = i + 1) begin
-    //     $dumpvars(1, data_parity_filter.m_even_bytes[i]);
-    //     $dumpvars(1, data_parity_filter.m_odd_bytes[i]);
-    //   end
-    // $dumpvars(1, m_even_bytes[0]);
-    // $dumpvars(1, m_even_bytes[1]);
-    // $dumpvars(1, m_even_bytes[2]);
 	  a_clk=0;
 	  forever begin
 		  #5 a_clk=~a_clk;
