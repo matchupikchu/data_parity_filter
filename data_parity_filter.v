@@ -44,10 +44,12 @@ input 			  axis_s_tlast;
 // control regs and wires
 wire w_parity;
 
-reg [4:0] r_counter_even;
-reg [4:0] r_counter_odd;
 reg [3:0] r_counter_control_receiver;
 reg [3:0] r_counter_control_transceiver;
+
+reg [3:0] r_tlast_even;
+reg [3:0] r_tlast_odd;
+
 
 // regs of data
 
@@ -61,6 +63,7 @@ reg [7:0] r_odd_flag;
 
 // Combinational logic
 assign w_parity = r_data[7] ^ r_data[6] ^ r_data[5] ^ r_data[4] ^ r_data[3] ^ r_data[2] ^ r_data[1] ^ r_data[0];
+assign axis_s_tready = (r_counter_control_receiver == 0) && (r_counter_control_transceiver == 0) ? 1'b1 : 1'b0;
 
 // Procedural blocks, sequential logic
 
@@ -69,8 +72,6 @@ always @(posedge a_clk)
 begin
     
     if (axis_aresetn) begin
-        r_counter_even <= 0;
-        r_counter_odd <= 0;
         r_counter_control_receiver <= 0;
         r_counter_control_transceiver <= 0;
         
@@ -80,6 +81,10 @@ begin
         r_even_flag <= 0;
         r_odd_flag <= 0;
 
+        r_tlast_even <= 0;
+        r_tlast_odd <= 0;
+
+        r_data <= 0;
     end
 
     if (axis_s_tvalid) begin
@@ -232,7 +237,55 @@ begin
                 end
     endcase
 
+    if(r_even_flag[0] == 1'b1)
+        r_tlast_even <= 8;
+    else if(r_even_flag[1] == 1'b1)
+        r_tlast_even <= 7;
+    else if(r_even_flag[2] == 1'b1)
+        r_tlast_even <= 6;
+    else if(r_even_flag[3] == 1'b1)
+        r_tlast_even <= 5;
+    else if(r_even_flag[4] == 1'b1)
+        r_tlast_even <= 4;    
+    else if(r_even_flag[5] == 1'b1)
+        r_tlast_even <= 3;
+    else if(r_even_flag[6] == 1'b1)
+        r_tlast_even <= 2;
+    else if(r_even_flag[7] == 1'b1)
+        r_tlast_even <= 1;
+
+
+    if(r_odd_flag[0] == 1'b1)
+        r_tlast_odd <= 8;
+    else if(r_odd_flag[1] == 1'b1)
+        r_tlast_odd <= 7;
+    else if(r_odd_flag[2] == 1'b1)
+        r_tlast_odd <= 6;
+    else if(r_odd_flag[3] == 1'b1)
+        r_tlast_odd <= 5;
+    else if(r_odd_flag[4] == 1'b1)
+        r_tlast_odd <= 4;    
+    else if(r_odd_flag[5] == 1'b1)
+        r_tlast_odd <= 3;
+    else if(r_odd_flag[6] == 1'b1)
+        r_tlast_odd <= 2;
+    else if(r_odd_flag[7] == 1'b1)
+        r_tlast_odd <= 1;
+
+    if (r_counter_control_transceiver == r_tlast_odd)
+        axis_m_tlast_odd <= 1;
+    else 
+        axis_m_tlast_odd <= 0;
+
+
+    if (r_counter_control_transceiver == r_tlast_even)
+        axis_m_tlast_even <= 1;
+    else 
+        axis_m_tlast_even <= 0;
+
+
 end
+
 
 
 endmodule
