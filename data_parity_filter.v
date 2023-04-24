@@ -3,13 +3,14 @@ module data_parity_filter(
     axis_aresetn,
     axis_m_tready,
     axis_s_tready,
+    axis_m_tdata,
 
     // master
     axis_m_tvalid_odd,
-    axis_m_tdata_odd,
+    // axis_m_tdata_odd,
     axis_m_tlast_odd,
     axis_m_tvalid_even,
-    axis_m_tdata_even,
+    // axis_m_tdata_even,
     axis_m_tlast_even,
     
     // slave
@@ -24,17 +25,17 @@ input            axis_aresetn;
 input 			 axis_m_tready; // master
 output reg		 axis_s_tready; // slave
 
+output reg [7:0] axis_m_tdata;  // master
+
+
 // master signals
 // odd output interface
 output reg    	 axis_m_tvalid_odd; 
-output reg [7:0] axis_m_tdata_odd;
 output reg		 axis_m_tlast_odd;
 
 // even output interface
 output reg    	 axis_m_tvalid_even; 
-output reg [7:0] axis_m_tdata_even;
 output reg		 axis_m_tlast_even;
-
 
 // slave signals
 input             axis_s_tvalid;
@@ -70,25 +71,32 @@ assign axis_s_tready = (r_counter_control_receiver == 0) &&
 
 // Procedural blocks, sequential logic
 
+// reset the device
+
+always @(posedge a_clk or negedge axis_aresetn)
+begin
+
+    if (!axis_aresetn) begin
+        r_counter_control_receiver <= 4'd0;
+        r_counter_control_transceiver <= 4'd0;
+        
+        r_even_bytes <= 64'd0;
+        r_odd_bytes <= 64'd0;
+
+        r_even_flag <= 8'd0;
+        r_odd_flag <= 8'd0;
+
+        r_tlast_even <= 4'd0;
+        r_tlast_odd <= 8'd0;
+
+        r_data <= 8'd0;
+    end
+
+end
+
 // reveive and store data
 always @(posedge a_clk)
 begin
-    
-    if (axis_aresetn) begin
-        r_counter_control_receiver <= 0;
-        r_counter_control_transceiver <= 0;
-        
-        r_even_bytes <= 0;
-        r_odd_bytes <= 0;
-
-        r_even_flag <= 0;
-        r_odd_flag <= 0;
-
-        r_tlast_even <= 0;
-        r_tlast_odd <= 0;
-
-        r_data <= 0;
-    end
 
     if (axis_s_tvalid) begin
         r_data <= axis_s_tdata;
@@ -161,12 +169,12 @@ begin
                         end
                 8'd8    : begin 
                             if(w_parity) begin
-                                if(r_counter_control_transceiver == 0) begin
+                                if(r_counter_control_transceiver == 4'd0) begin
                                     r_odd_bytes[7:0]   = r_data;
                                     r_odd_flag <= r_odd_flag ^ 8'b00000001;
                                 end
                             end else begin 
-                                if(r_counter_control_transceiver == 0) begin
+                                if(r_counter_control_transceiver == 4'd0) begin
                                     r_even_bytes[7:0]   = r_data;
                                     r_even_flag <= r_even_flag ^ 8'b00000001;
                                 end
@@ -185,58 +193,86 @@ begin
         r_counter_control_transceiver <= r_counter_control_transceiver + 1;
     end
 
-    if(r_counter_control_transceiver > 0) begin
+    if(r_counter_control_transceiver > 8'd0) begin
         if(r_even_flag[8-r_counter_control_transceiver]) begin
-            axis_m_tvalid_even <= 1;
+            axis_m_tvalid_even <= 1'b1;
         end else begin 
-            axis_m_tvalid_even <= 0;
+            axis_m_tvalid_even <= 1'b0;
         end
 
         if(r_odd_flag[8-r_counter_control_transceiver]) begin
-            axis_m_tvalid_odd <= 1;
+            axis_m_tvalid_odd <= 1'b1;
         end else begin
-            axis_m_tvalid_odd <= 0;
+            axis_m_tvalid_odd <= 1'b0;
         end
     end else begin
-        axis_m_tvalid_even <= 0;
-        axis_m_tvalid_odd <= 0;
+        axis_m_tvalid_even <= 1'b0;
+        axis_m_tvalid_odd <= 1'b0;
     end
 
 
     case(r_counter_control_transceiver)
     8'd1    :   begin
-                    axis_m_tdata_even <= r_even_bytes[63:56];
-                    axis_m_tdata_odd  <= r_odd_bytes[63:56];
+                    if(r_even_flag[7])
+                        axis_m_tdata <= r_even_bytes[63:56];
+                    if(r_odd_flag[7]) 
+                        axis_m_tdata <= r_odd_bytes[63:56];
                 end
     8'd2    :   begin
-                    axis_m_tdata_even <= r_even_bytes[55:48];
-                    axis_m_tdata_odd  <= r_odd_bytes[55:48];
+                    if(r_even_flag[6])
+                        axis_m_tdata <= r_even_bytes[55:48];
+                    else if(r_odd_flag[6]) 
+                        axis_m_tdata <= r_odd_bytes[55:48];
                 end
     8'd3    :   begin
-                    axis_m_tdata_even <= r_even_bytes[47:40];
-                    axis_m_tdata_odd  <= r_odd_bytes[47:40];
+                    if(r_even_flag[5])
+                        axis_m_tdata <= r_even_bytes[47:40];
+                    else if(r_odd_flag[5]) 
+                        axis_m_tdata <= r_odd_bytes[47:40];
                 end
     8'd4    :   begin
-                    axis_m_tdata_even <= r_even_bytes[39:32];
-                    axis_m_tdata_odd  <= r_odd_bytes[39:32];
+                    if(r_even_flag[4])
+                        axis_m_tdata <= r_even_bytes[39:32];
+                    else if(r_odd_flag[4]) 
+                        axis_m_tdata <= r_odd_bytes[39:32];
                 end
     8'd5    :   begin
-                    axis_m_tdata_even <= r_even_bytes[31:24];
-                    axis_m_tdata_odd  <= r_odd_bytes[31:24];
+                    if(r_even_flag[3])
+                        axis_m_tdata <= r_even_bytes[31:24];
+                    else if(r_odd_flag[3]) 
+                        axis_m_tdata <= r_odd_bytes[31:24];
                 end
     8'd6    :   begin
-                    axis_m_tdata_even <= r_even_bytes[23:16];
-                    axis_m_tdata_odd  <= r_odd_bytes[23:16];
+                    if(r_even_flag[2])
+                        axis_m_tdata <= r_even_bytes[23:16];
+                    else if(r_odd_flag[2]) 
+                        axis_m_tdata <= r_odd_bytes[23:16];
                 end
     8'd7    :   begin
-                    axis_m_tdata_even <= r_even_bytes[15:8];
-                    axis_m_tdata_odd  <= r_odd_bytes[15:8];
+                    if(r_even_flag[1])
+                        axis_m_tdata <= r_even_bytes[15:8];
+                    else if(r_odd_flag[1]) 
+                        axis_m_tdata <= r_odd_bytes[15:8];
                 end
     8'd8    :   begin
-                    axis_m_tdata_even <= r_even_bytes[7:0];
-                    axis_m_tdata_odd  <= r_odd_bytes[7:0];
-                    r_counter_control_transceiver <= 0;
-                    r_counter_control_receiver <= 0;
+                    if(r_even_flag[0])
+                        axis_m_tdata <= r_even_bytes[7:0];
+                    else if(r_odd_flag[0]) 
+                        axis_m_tdata <= r_odd_bytes[7:0];
+                    r_counter_control_receiver <= 4'd0;
+                    r_counter_control_transceiver <= 4'd0;
+                    
+                    r_even_bytes <= 64'd0;
+                    r_odd_bytes <= 64'd0;
+
+                    r_even_flag <= 8'd0;
+                    r_odd_flag <= 8'd0;
+
+                    r_tlast_even <= 4'd0;
+                    r_tlast_odd <= 8'd0;
+
+                    r_data <= 8'd0;
+                    
                 end
     endcase
 

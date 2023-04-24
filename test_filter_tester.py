@@ -15,9 +15,9 @@ class TbParityFilterTester(object):
         cocotb.start_soon(Clock(self.dut.a_clk, clk_period,units='ns').start())
 
 
-class ParityTester(TbParityFilterTester):
+class ParityFilterTester(TbParityFilterTester):
     def __init__(self, dut):
-        super(ParityTester, self).__init__(dut)
+        super(ParityFilterTester, self).__init__(dut)
 
         self.dut = dut
         self.expected_output = []

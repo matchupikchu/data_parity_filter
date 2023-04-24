@@ -5,13 +5,14 @@ module data_parity_filter_wrapper(
     axis_aresetn,
     axis_m_tready,
     axis_s_tready,
+    axis_m_tdata,
 
     // master
     axis_m_tvalid_odd,
-    axis_m_tdata_odd,
+    // axis_m_tdata_odd,
     axis_m_tlast_odd,
     axis_m_tvalid_even,
-    axis_m_tdata_even,
+    // axis_m_tdata_even,
     axis_m_tlast_even,
     
     // slave
@@ -25,16 +26,17 @@ input            axis_aresetn;
 
 input 			 axis_m_tready; // master
 output  		 axis_s_tready; // slave
+output      [7:0] axis_m_tdata;
 
 // master signals
 // odd output interface
 output     	 axis_m_tvalid_odd; 
-output   [7:0] axis_m_tdata_odd;
+// output   [7:0] axis_m_tdata_odd;
 output     	 axis_m_tlast_odd;
 
 // even output interface
 output     	 axis_m_tvalid_even; 
-output  [7:0] axis_m_tdata_even;
+// output  [7:0] axis_m_tdata_even;
 output 		 axis_m_tlast_even;
 
 
@@ -51,14 +53,15 @@ data_parity_filter dut(
     .axis_aresetn(axis_aresetn),
     .axis_m_tready(axis_m_tready),
     .axis_s_tready(axis_s_tready),
+    .axis_m_tdata(axis_m_tdata),
     // master
     // odd output interface
     .axis_m_tvalid_odd(axis_m_tvalid_odd),
-    .axis_m_tdata_odd(axis_m_tdata_odd),
+    // .axis_m_tdata_odd(axis_m_tdata_odd),
     .axis_m_tlast_odd(axis_m_tlast_odd),
     // odd output interface
     .axis_m_tvalid_even(axis_m_tvalid_even),
-    .axis_m_tdata_even(axis_m_tdata_even),
+    // .axis_m_tdata_even(axis_m_tdata_even),
     .axis_m_tlast_even(axis_m_tlast_even),
     // slave
     .axis_s_tvalid(axis_s_tvalid),
