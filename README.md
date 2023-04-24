@@ -12,7 +12,8 @@ The whole interface consists of such signals as:
   - a_clk - global clock,
   - axis_aresetn - global reset signal
   - axis_m_tready - global master ready signal, 
-  - axis_s_tready - global slave ready signal
+  - axis_s_tready - global slave ready signal,
+  - axis_m_tdata - master 8 bit wide bus,
 
 - slave side:
   - axis_s_tvalid - slave valid signal,
@@ -22,11 +23,9 @@ The whole interface consists of such signals as:
 - master side:
   - data with odd number of ones 
     - axis_m_tvalid_odd - master valid signal,
-    - axis_m_tdata_odd - master 8 bit wide bus,
     - axis_m_tlast_odd - master last signal
   - data with even number of ones 
     - axis_m_tvalid_even - master valid signal,
-    - axis_m_tdata_even - master 8 bit wide bus,
     - axis_m_tlast_even - master last signal
 
 
@@ -36,5 +35,5 @@ The whole interface consists of such signals as:
   - Icarus Verilog 10.3 
 
 ## Example waveform
-![image](https://user-images.githubusercontent.com/56771910/233341673-f71787b5-589c-47cd-be81-d87eb89216f9.png)
+![image](https://user-images.githubusercontent.com/56771910/233961383-0ebe488a-456a-4769-9222-559bedbb7698.png)
 
