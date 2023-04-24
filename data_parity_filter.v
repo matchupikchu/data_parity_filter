@@ -7,10 +7,8 @@ module data_parity_filter(
 
     // master
     axis_m_tvalid_odd,
-    // axis_m_tdata_odd,
     axis_m_tlast_odd,
     axis_m_tvalid_even,
-    // axis_m_tdata_even,
     axis_m_tlast_even,
     
     // slave
@@ -324,7 +322,5 @@ begin
 
 
 end
-
-
 
 endmodule
