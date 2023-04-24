@@ -13,7 +13,7 @@ The whole interface consists of such signals as:
   - axis_aresetn - global reset signal
   - axis_m_tready - global master ready signal, 
   - axis_s_tready - global slave ready signal,
-  - axis_m_tdata - master 8 bit wide bus,
+  - axis_m_tdata - global master 8 bit wide bus,
 
 - slave side:
   - axis_s_tvalid - slave valid signal,
