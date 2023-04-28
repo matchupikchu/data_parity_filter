@@ -26,6 +26,7 @@ class ParityFilterTester(TbParityFilterTester):
         self.dut.axis_s_tdata.value = 0
         self.dut.axis_s_tlast.value = 0
 
+
         self.axis_m_driver = MasterDriver(self.dut, "axis_m", dut.a_clk)
         self.axis_s_driver = SlaveDriver(self.dut, "axis_s", dut.a_clk)
 
